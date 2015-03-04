@@ -23,7 +23,7 @@ public class Main {
 			float delta = (float)((currentTime - previousTime)/1000000000.0);
 			previousTime = currentTime;
 			
-			cube.rotate(new Vector(0, 1, 0), .001f * delta);
+//			cube.rotate(new Vector(0, 1, 0), .001f * delta);
 			
 			target.Clear((byte)0x00);
 			

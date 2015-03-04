@@ -7,7 +7,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import javax.swing.JFrame;
 
-public class Display extends Canvas{
+public class Display extends Canvas
+{
 
 	private static final long serialVersionUID = -5731461407498870427L;
 	private final JFrame         m_frame;
