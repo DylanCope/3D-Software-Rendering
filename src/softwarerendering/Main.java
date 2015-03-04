@@ -1,3 +1,4 @@
+package softwarerendering;
 import java.awt.event.KeyEvent;
 
 
@@ -9,8 +10,8 @@ public class Main {
 		Bitmap target = display.getFrameBuffer();
 		//Grid3D stars = new Grid3D(20000, 60f);
 		Cube cube = new Cube(0f, 0, .5f, .05f);
-		Cube cube1 = new Cube(0.5f, 0, 0f, .05f);
-		Cube cube2 = new Cube(0.3f, -.4f, .1f, .05f);
+//		Cube cube1 = new Cube(0.5f, 0, 0f, .05f);
+//		Cube cube2 = new Cube(0.3f, -.4f, .1f, .05f);
 		
 		final ViewPoint view = new ViewPoint();
 		
@@ -25,8 +26,8 @@ public class Main {
 			target.Clear((byte)0x00);
 			
 			cube.update(delta, target, view);
-			cube1.update(delta, target, view);
-			cube2.update(delta, target, view);
+//			cube1.update(delta, target, view);
+//			cube2.update(delta, target, view);
 			
 			float speed = 30f;
 			

@@ -1,3 +1,4 @@
+package softwarerendering;
 import java.util.ArrayList;
 
 
@@ -67,7 +68,7 @@ public class Cube {
 			view.drawPoint(m_vertices.get(i), target, WHITE);
 			
 			for(int j = i + 1; j < m_vertices.size(); j++){
-				if(m_vertices.get(i).vectorTo(m_vertices.get(j)).getMod() < m_size * 2.5){
+				if(m_vertices.get(i).vectorTo(m_vertices.get(j)).len() < m_size * 2.5){
 					view.drawLine(m_vertices.get(i), m_vertices.get(j), target, WHITE);
 				}
 			}

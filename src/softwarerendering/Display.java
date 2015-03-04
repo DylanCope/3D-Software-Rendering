@@ -1,3 +1,4 @@
+package softwarerendering;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -17,14 +18,15 @@ public class Display extends Canvas{
 	private final Graphics       m_graphics;
 	private final Input          m_input;
 	
-	public Display(int width, int height, String title){
+	public Display(int width, int height, String title)
+	{
 		Dimension size = new Dimension(width, height);
 		setPreferredSize(size);
 		setMinimumSize(size);
 		setMaximumSize(size);
 		
 		m_frameBuffer = new Bitmap(width, height);
-		m_displayImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		m_displayImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 		m_displayComponents = 
 				((DataBufferByte) m_displayImage.getRaster().getDataBuffer()).getData();
 		

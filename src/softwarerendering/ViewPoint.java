@@ -1,10 +1,11 @@
+package softwarerendering;
 
 public class ViewPoint {
 	
 	private int m_renderDist, m_focalDist;
 	private float m_FoV, m_x, m_y, m_z;
 	private float m_azimuth, m_elevation;
-	
+	private Vector direction;
 	
 	public ViewPoint(){
 		m_renderDist = 15000;
@@ -15,19 +16,22 @@ public class ViewPoint {
 		m_z = 0;
 		m_azimuth = 0;
 		m_elevation = 0;
+		direction = new Vector(1, 0, 0);
 		
 	}
 	
 	public boolean isInView(Vector point){
-		double viewRangeX = point.getK() * Math.tan(m_azimuth + m_FoV / 2);
-		double viewRangeY = point.getK() * Math.tan(m_elevation + m_FoV / 2);
+//		double viewRangeX = point.getK() * Math.tan(m_azimuth + m_FoV / 2);
+//		double viewRangeY = point.getK() * Math.tan(m_elevation + m_FoV / 2);
+//		
+//		if (Math.abs(point.getI()) <= viewRangeX &&
+//				Math.abs(point.getJ()) <= viewRangeY) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+		return m_FoV / 2 < direction.angleTo(point);
 		
-		if (Math.abs(point.getI()) <= viewRangeX &&
-				Math.abs(point.getJ()) <= viewRangeY) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 	
 	public int[] getViewCoords(Vector point, Bitmap target){
@@ -45,7 +49,6 @@ public class ViewPoint {
 		coords[0] = xOnScreen;
 		coords[1] = yOnScreen;
 			
-		
 		return coords;
 	}
 	

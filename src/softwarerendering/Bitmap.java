@@ -1,3 +1,4 @@
+package softwarerendering;
 import java.util.Arrays;
 
 public class Bitmap {
