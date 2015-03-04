@@ -12,15 +12,21 @@ public class Cube {
 	private byte[] WHITE;
 	
 	
-	public Cube(float x, float y, float z, float size){
+	public Cube(float x, float y, float z, float size)
+	{
 		m_size = size / 2;
 		m_vertices = new ArrayList<Vector>();
 		m_position = new Vector(x, y, z);
 		
-		WHITE =  new byte[4];
-		WHITE[0] = (byte)0xFF; WHITE[1] = (byte)0xFF;
-		WHITE[2] = (byte)0xFF; WHITE[3] = (byte)0xFF;
+		WHITE = new byte[4];
+		WHITE[0] = (byte) 0xFF; WHITE[1] = (byte) 0xFF;
+		WHITE[2] = (byte) 0xFF; WHITE[3] = (byte) 0xFF;
 		
+		updateVertices();
+	}
+	
+	private void updateVertices()
+	{	
 		Vector v0 = new Vector( m_size,  m_size,  m_size);
 		Vector v1 = new Vector(-m_size,  m_size,  m_size);
 		Vector v2 = new Vector( m_size, -m_size,  m_size);
@@ -38,6 +44,9 @@ public class Cube {
 		m_vertices.add(v5);
 		m_vertices.add(v6);
 		m_vertices.add(v7);
+		
+		updateEdges();
+		
 	}
 	
 	private void updateEdges()
@@ -57,8 +66,8 @@ public class Cube {
 		m_edges.add(new Edge(m_vertices.get(2), m_vertices.get(3)));
 	}
 	
-	public void update(float delta, Bitmap target, ViewPoint view){
-
+	public void update(float delta, Bitmap target, ViewPoint view)
+	{
 //		for(int i = 0; i < m_vertices.size(); i++){
 ////			view.drawPoint(m_vertices.get(i).add(m_position), target, WHITE);
 //			
@@ -77,5 +86,13 @@ public class Cube {
 			m_vertices.set(i, m_vertices.get(i).rotate(axis, theta));
 		updateEdges();
 	}
+	
+	public void scale(float k) {
+		for (int i = 0; i < m_vertices.size(); i++)
+			m_vertices.set(i, m_vertices.get(i).mul(k));
+		updateEdges();
+	}
+	
+	public void setSize(float size) { scale(0.5f * size / m_size); System.out.println(0.5f * size / m_size); }
 	
 }
