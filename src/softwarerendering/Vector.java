@@ -2,6 +2,14 @@ package softwarerendering;
 
 public class Vector 
 {
+	public static final Vector xAxis = new Vector(1, 0, 0);
+	public static final Vector yAxis = new Vector(0, 1, 0);
+	public static final Vector zAxis = new Vector(0, 0, 1);
+	
+	public static void main(String[] args)
+	{
+		System.out.println(xAxis.rotate(yAxis, (float) Math.PI / 2));
+	}
 	
 	private float m_i, m_j, m_k;
 	
@@ -112,4 +120,6 @@ public class Vector
 	public Vector mul(float k) { return mul(new Vector(k, k, k)); }
 	public Vector div(float k) { return div(new Vector(k, k, k)); }
 
+	public String toString() { return "(" + m_i + ", " + m_j + ", " + m_k + ")"; }
+	
 }
