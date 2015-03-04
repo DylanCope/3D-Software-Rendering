@@ -13,12 +13,12 @@ public class Quaternion
 	
 	public Quaternion(Vector axis, float theta) {
 		Vector n = axis.normalised();
-		float cos = (float) Math.cos(theta);
-		float sin = (float) Math.sin(theta);
-		x = n.getI() * sin / 2f;
-		y = n.getJ() * sin / 2f;
-		z = n.getK() * sin / 2f;
-		w = cos / 2f;
+		float cos = (float) Math.cos(theta / 2f);
+		float sin = (float) Math.sin(theta / 2f);
+		x = n.getI() * sin;
+		y = n.getJ() * sin;
+		z = n.getK() * sin;
+		w = cos;
 	}
 	
 	public float len() {

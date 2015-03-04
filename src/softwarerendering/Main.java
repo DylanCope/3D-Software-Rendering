@@ -10,7 +10,7 @@ public class Main {
 		Bitmap target = display.getFrameBuffer();
 		//Grid3D stars = new Grid3D(20000, 60f);
 		Cube cube = new Cube(0f, 0, .5f, .05f);
-//		Cube cube1 = new Cube(0.5f, 0, 0f, .05f);
+		Cube cube1 = new Cube(0f, 0, .5f, .07f);
 //		Cube cube2 = new Cube(0.3f, -.4f, .1f, .05f);
 		
 		final ViewPoint view = new ViewPoint();
@@ -23,12 +23,12 @@ public class Main {
 			float delta = (float)((currentTime - previousTime)/1000000000.0);
 			previousTime = currentTime;
 			
-//			cube.rotate(new Vector(0, 1, 0), .001f * delta);
+			cube.rotate(new Vector(0, 1, 0), delta);
 			
 			target.Clear((byte)0x00);
 			
 			cube.update(delta, target, view);
-//			cube1.update(delta, target, view);
+			cube1.update(delta, target, view);
 //			cube2.update(delta, target, view);
 			
 			float speed = 30f;
@@ -61,10 +61,10 @@ public class Main {
 				view.move(delta * speed, 0, 0);
 			}
 			else if(display.getInput().getKey(KeyEvent.VK_SPACE)){
-				view.move(0, delta * speed, 0);
+				view.move(0, - delta * speed, 0);
 			}
 			else if(display.getInput().getKey(KeyEvent.VK_SHIFT)){
-				view.move(0, - delta * speed, 0);
+				view.move(0, delta * speed, 0);
 			}
 			
 			

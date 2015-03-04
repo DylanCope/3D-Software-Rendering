@@ -18,8 +18,8 @@ public class Bitmap {
 		Arrays.fill(m_components, shade);
 	}
 	
-	public void DrawPixel(int x, int y, byte[] colour){
-		
+	public void DrawPixel(int x, int y, byte[] colour) 
+	{	
 		int index = (x + y * m_width) * 4;
 		
 		if(index + 3 < m_components.length && index >= 0){
