@@ -1,6 +1,7 @@
 package softwarerendering;
 
-public class Vector {
+public class Vector 
+{
 	
 	private float m_i, m_j, m_k;
 	
@@ -51,7 +52,7 @@ public class Vector {
 	public void rotate(float dA, float dE) {
 		
 		double e = Math.asin(m_j / len());
-		double a = Math.atan(m_i/m_k);
+		double a = Math.atan(m_i / m_k);
 		
 		m_j = (float) (len() * Math.sin(e + dE));
 		m_i = (float) (len() * Math.cos(e + dE) * Math.sin(a + dA));
