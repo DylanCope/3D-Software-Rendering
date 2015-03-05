@@ -9,30 +9,35 @@ public class Main {
 		Display display = new Display(800, 600, "Software Rendering");
 		Bitmap target = display.getFrameBuffer();
 		//Grid3D stars = new Grid3D(20000, 60f);
-		Cube cube = new Cube(0, 0, .5f, .05f);
+		Cube cube = new Cube(0, 0, .5f, .1f);
 		Cube cube1 = new Cube(0, 0, .5f, .15f);
 //		Cube cube2 = new Cube(0.3f, -.4f, .1f, .05f);
 		
 		final ViewPoint view = new ViewPoint();
 		
+		float elapsedTime = 0;
 		long previousTime = System.nanoTime();
 		
 		while(true){
 
 			long currentTime = System.nanoTime();
 			float delta = (float)((currentTime - previousTime)/1000000000.0);
+			elapsedTime += delta;
 			previousTime = currentTime;
 			
 			cube.rotate(Vector.xAxis, delta);
 			cube.rotate(Vector.yAxis, delta * 2);
 			cube.rotate(Vector.zAxis, delta * 1.5f);
 			
-			cube1.rotate(Vector.yAxis, delta);
+//			cube1.rotate(Vector.xAxis, delta);
+//			float sin = (float) Math.sin(Math.toRadians(elapsedTime * 50));
+//			float size = 0.15f + 0.00015f * sin;
+//			cube1.setSize(size);
 			
-			target.Clear((byte)0x00);
+			target.Clear((byte) 0x00);
 			
 			cube.update(delta, target, view);
-			cube1.update(delta, target, view);
+//			cube1.update(delta, target, view);
 //			cube2.update(delta, target, view);
 			
 			float speed = 30f;
@@ -78,11 +83,6 @@ public class Main {
 			}
 			
 			
-			float sin = (float) Math.sin(Math.toRadians(System.currentTimeMillis() / 1.1f));
-//			System.out.println(sin);
-			float size = 0.15f;
-//			System.out.println(size);
-			cube1.setSize(size);
 //			
 //			cube.setPosition(.5f * sin, .5f * cos, .75f + .3f * (float)Math.pow(sin, 2));
 			

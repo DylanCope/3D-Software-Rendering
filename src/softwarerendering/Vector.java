@@ -6,14 +6,9 @@ public class Vector
 	public static final Vector yAxis = new Vector(0, 1, 0);
 	public static final Vector zAxis = new Vector(0, 0, 1);
 	
-	public static void main(String[] args)
-	{
-		System.out.println(xAxis.rotate(yAxis, (float) Math.PI / 2));
-	}
-	
 	private float m_i, m_j, m_k;
 	
-	public Vector(float i, float j, float k){
+	public Vector(float i, float j, float k) {
 		m_i = i;
 		m_j = j;
 		m_k = k;
@@ -31,12 +26,12 @@ public class Vector
 		return new Vector(m_i, m_j, m_k).div(len());
 	}
 	
-	public double getAzimuthalAngle() {
-		return Math.atan(m_i/m_k);
+	public float getAzimuthalAngle() {
+		return (float) Math.atan(m_i / m_k);
 	}
 	
-	public double getElevationAngle() {
-		return Math.asin(m_k/len());
+	public float getElevationAngle() {
+		return (float) Math.asin(m_k / len());
 	}
 	
 	public float dotProduct(Vector b) {
@@ -91,11 +86,11 @@ public class Vector
 		return m_i;
 	}
 	
-	public float getJ(){
+	public float getJ() {
 		return m_j;
 	}
 	
-	public float getK(){
+	public float getK() {
 		return m_k;
 	}
 	

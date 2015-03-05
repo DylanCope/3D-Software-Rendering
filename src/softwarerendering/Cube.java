@@ -93,6 +93,6 @@ public class Cube {
 		updateEdges();
 	}
 	
-	public void setSize(float size) { scale(0.5f * size / m_size); System.out.println(0.5f * size / m_size); }
+	public void setSize(float size) { scale(0.5f * size / m_size); }
 	
 }

@@ -35,9 +35,11 @@ public class ViewPoint
 	}
 	
 	public int[] getViewCoords(Vector point, Bitmap target) {
-		Vector rel = point
+		Vector rel = m_pos
+				.sub(point)
 				.rotate(Vector.yAxis, -m_azimuth)
 				.rotate(Vector.yAxis.crossProduct(m_direction), -m_elevation);
+//		System.out.println(Vector.yAxis.crossProduct(m_direction));
 		int[] coords = new int[2];
 		
 		float halfWidth = target.getWidth() / 2f;
@@ -55,7 +57,8 @@ public class ViewPoint
 		return coords;
 	}
 	
-	public void drawPoint(Vector point, Bitmap target, byte[] colour){
+	public void drawPoint(Vector point, Bitmap target, byte[] colour)
+	{
 		
 		Vector a = new Vector(point.getI(), point.getJ(), point.getK());
 		
@@ -135,8 +138,8 @@ public class ViewPoint
 		return m_focalDist;
 	}
 	
-	public void setFOV(float FOV){
-		m_FoV = (float) Math.toRadians(FOV);
+	public void setFOV(float FoV){
+		m_FoV = (float) Math.toRadians(FoV);
 	}
 	
 	public float getFOV(){
@@ -154,11 +157,22 @@ public class ViewPoint
 	public void rotateView(float azimuth, float elevation){
 		m_azimuth   += (float) Math.toRadians(azimuth);
 		m_elevation += (float) Math.toRadians(elevation);
+		m_direction = new Vector(
+				(float) Math.sin(m_elevation),
+				(float) Math.sin(m_azimuth),
+				(float) Math.cos(m_azimuth));
+		
+//		m_direction.rotate(Vector.yAxis, azimuth);
+//		m_direction.rotate(Vector.yAxis.crossProduct(m_direction), elevation);
 	}
 	
 	public void setView(float azimuth, float elevation){
 		m_azimuth   = (float) Math.toRadians(azimuth);
 		m_elevation = (float) Math.toRadians(elevation);
+		m_direction = new Vector(
+				(float) Math.sin(m_elevation),
+				(float) Math.sin(m_azimuth),
+				(float) Math.cos(m_azimuth));
 	}
 	
 	public float getX(){
@@ -180,6 +194,9 @@ public class ViewPoint
 	public float getElevation(){
 		return m_elevation;
 	}
-		
+	
+	public Vector getDirection() {
+		return m_direction;
+	}
 	
 }
