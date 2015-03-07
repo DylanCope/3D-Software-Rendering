@@ -1,4 +1,4 @@
-package softwarerendering;
+package softwarerendering.maths;
 
 public class Vector 
 {

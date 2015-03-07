@@ -1,6 +1,9 @@
 package softwarerendering;
 import java.awt.event.KeyEvent;
 
+import softwarerendering.geometry.Cube;
+import softwarerendering.maths.Vector;
+
 
 public class Main {
 	
@@ -26,8 +29,8 @@ public class Main {
 			previousTime = currentTime;
 			
 			cube.rotate(Vector.xAxis, delta);
-			cube.rotate(Vector.yAxis, delta * 2);
-			cube.rotate(Vector.zAxis, delta * 1.5f);
+			cube.rotate(Vector.yAxis, delta);
+			cube.rotate(Vector.zAxis, delta);
 			
 //			cube1.rotate(Vector.xAxis, delta);
 //			float sin = (float) Math.sin(Math.toRadians(elapsedTime * 50));
@@ -57,27 +60,26 @@ public class Main {
 			
 			speed = .5f;
 			
-			if(display.getInput().getKey(KeyEvent.VK_W)){
+			if(display.getInput().getKey(KeyEvent.VK_W)) {
 				view.move(0, 0, delta * speed);
 			}
-			else if(display.getInput().getKey(KeyEvent.VK_S)){
+			else if(display.getInput().getKey(KeyEvent.VK_S)) {
 				view.move(0, 0, - delta * speed);
 			}
-			if(display.getInput().getKey(KeyEvent.VK_A)){
+			if(display.getInput().getKey(KeyEvent.VK_A)) {
 				view.move(- delta * speed, 0, 0);
 			}
-			else if(display.getInput().getKey(KeyEvent.VK_D)){
+			else if(display.getInput().getKey(KeyEvent.VK_D)) {
 				view.move(delta * speed, 0, 0);
 			}
-			else if(display.getInput().getKey(KeyEvent.VK_SPACE)){
+			else if(display.getInput().getKey(KeyEvent.VK_SPACE)) {
 				view.move(0, - delta * speed, 0);
 			}
-			else if(display.getInput().getKey(KeyEvent.VK_SHIFT)){
+			else if(display.getInput().getKey(KeyEvent.VK_SHIFT)) {
 				view.move(0, delta * speed, 0);
 			}
 			
-			
-			else if(display.getInput().getKey(KeyEvent.VK_R)){
+			else if(display.getInput().getKey(KeyEvent.VK_R)) {
 				view.setPosition(0, 0, 0);
 				view.setView(0, 0);
 			}

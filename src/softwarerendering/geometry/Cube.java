@@ -1,5 +1,9 @@
-package softwarerendering;
+package softwarerendering.geometry;
 import java.util.ArrayList;
+
+import softwarerendering.Bitmap;
+import softwarerendering.ViewPoint;
+import softwarerendering.maths.Vector;
 
 
 public class Cube {

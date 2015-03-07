@@ -1,5 +1,7 @@
 package softwarerendering;
 
+import softwarerendering.maths.Vector;
+
 public class ViewPoint 
 {
 	
