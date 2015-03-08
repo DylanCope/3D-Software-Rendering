@@ -6,45 +6,74 @@ public class Vector
 	public static final Vector yAxis = new Vector(0, 1, 0);
 	public static final Vector zAxis = new Vector(0, 0, 1);
 	
-	private float m_i, m_j, m_k;
+	private float[] m_values;
 	
 	public Vector(float i, float j, float k) {
-		m_i = i;
-		m_j = j;
-		m_k = k;
+		m_values = new float[] {i, j, k};
+	}
+	
+	public Vector(float i, float j) {
+		m_values = new float[] {i, j};
+	}
+	
+	public Vector(float[] values) { 
+		m_values = values;
 	}
 	
 	public float len() {
-		return (float) Math.sqrt(
-				Math.pow(m_i, 2f) +
-				Math.pow(m_j, 2f) +
-				Math.pow(m_k, 2f));
+		float len = 0;
+		for (float value : m_values)
+			len += value * value;
+		return (float) Math.sqrt(len);
 	}
 	
 	public Vector normalised()
 	{
-		return new Vector(m_i, m_j, m_k).div(len());
+		float[] newValues = new float[m_values.length];
+		float length = len();
+		for (int i = 0; i < m_values.length; i++)
+			newValues[i] = m_values[i] / length;
+		return new Vector(newValues);
 	}
 	
 	public float getAzimuthalAngle() {
-		return (float) Math.atan(m_i / m_k);
+		if (m_values.length == 3)
+			return (float) Math.atan(m_values[0] / m_values[2]);
+		return 0;
 	}
 	
 	public float getElevationAngle() {
-		return (float) Math.asin(m_k / len());
+		if (m_values.length == 3)
+			return (float) Math.asin(m_values[2] / len());
+		return 0;
 	}
 	
 	public float dotProduct(Vector b) {
-		return m_i * b.getI()
-				+ m_j * b.getJ()
-				+ m_k * b.getK();
+		float product = 0;
+		if (b.getValues().length == m_values.length)
+			for (int i = 0; i < m_values.length; i++)
+				product += m_values[i] * b.getValues()[i];
+		return product;
+			
 	}
 	
 	public Vector crossProduct(Vector b) {
-		return new Vector(
-				m_j * b.getK() - m_k * b.getJ(),
-				m_k * b.getI() - m_i * b.getK(),
-				m_i * b.getJ() - m_j * b.getI());
+		if (m_values.length == 3)
+			return new Vector(
+					m_values[0] * b.getZ() - m_values[2] * b.getY(),
+					m_values[2] * b.getX() - m_values[0] * b.getZ(),
+					m_values[0] * b.getY() - m_values[1] * b.getX());
+		else if (m_values.length == 2)
+			return new Vector(
+				new float[] {
+					m_values[0] * b.getY() - m_values[1] * b.getX()
+				});
+		return null;
+	}
+	
+	public float triangeArea(Vector v1, Vector v2)
+	{
+		return sub(v1).crossProduct(sub(v2)).getX() / 2f;
 	}
 	
 	public double angleTo(Vector b) {
@@ -54,12 +83,12 @@ public class Vector
 	
 	public void rotate(float dA, float dE) {
 		
-		double e = Math.asin(m_j / len());
-		double a = Math.atan(m_i / m_k);
+		double e = Math.asin(m_values[2] / len());
+		double a = Math.atan(m_values[0] / m_values[2]);
 		
-		m_j = (float) (len() * Math.sin(e + dE));
-		m_i = (float) (len() * Math.cos(e + dE) * Math.sin(a + dA));
-		m_k = (float) (len() * Math.cos(e + dE) * Math.cos(a + dA));
+		m_values[1] = (float) (len() * Math.sin(e + dE));
+		m_values[0] = (float) (len() * Math.cos(e + dE) * Math.sin(a + dA));
+		m_values[2] = (float) (len() * Math.cos(e + dE) * Math.cos(a + dA));
 		
 	}
 	
@@ -69,45 +98,44 @@ public class Vector
 		return q.mul(this).mul(q.getConjugate()).vector();
 	}
 	
-	public void translate(float di, float dj, float dk) {
-		m_i += di;
-		m_j += dj;
-		m_k += dk;
-	}
-	
 	public Vector vectorTo(Vector b) {
-		float i = b.getI() - m_i;
-		float j = b.getJ() - m_j;
-		float k = b.getK() - m_k;
-		return new Vector(i, j, k);
+		float[] newValues = new float[m_values.length];
+		if (b.getValues().length == m_values.length)
+			for (int i = 0; i < m_values.length; i++)
+				m_values[i] = b.getValues()[i] - m_values[i];
+		return new Vector(newValues);
 	}
 	
-	public float getI() {
-		return m_i;
-	}
+	public float getX() { if (m_values.length > 0) return m_values[0]; return 0; }
+	public float getY() { if (m_values.length > 1) return m_values[1]; return 0; }
+	public float getZ() { if (m_values.length > 2) return m_values[2]; return 0; }
+	public float getW() { if (m_values.length > 3) return m_values[3]; return 0; }
 	
-	public float getJ() {
-		return m_j;
-	}
-	
-	public float getK() {
-		return m_k;
-	}
+	public float[] getValues() { return m_values; }
 	
 	public Vector add(Vector b) { 
-		return new Vector(m_i + b.getI(), m_j + b.getJ(), m_k + b.getK());
+		float[] newValues = new float[m_values.length];
+		for (int i = 0; i < m_values.length; i++)
+			newValues[i] = m_values[i] + b.getValues()[i];
+		return new Vector(newValues);
 	}
 	
 	public Vector sub(Vector b) { 
-		return new Vector(m_j - b.getI(), m_j - b.getJ(), m_k - b.getK());
+		return add(b.mul(-1));
 	}
 	
 	public Vector mul(Vector b) { 
-		return new Vector(m_i * b.getI(), m_j * b.getJ(), m_k * b.getK());
+		float[] newValues = new float[m_values.length];
+		for (int i = 0; i < m_values.length; i++)
+			newValues[i] = m_values[i] * b.getValues()[i];
+		return new Vector(newValues);
 	}
-	
-	public Vector div(Vector b){
-		return new Vector(m_i / b.getI(), m_j / b.getJ(), m_k / b.getK());
+
+	public Vector div(Vector b){ 
+		float[] newValues = new float[m_values.length];
+		for (int i = 0; i < m_values.length; i++)
+			newValues[i] = m_values[i] / b.getValues()[i];
+		return new Vector(newValues);
 	}
 	
 	public Vector add(float k) { return add(new Vector(k, k, k)); }
@@ -115,6 +143,12 @@ public class Vector
 	public Vector mul(float k) { return mul(new Vector(k, k, k)); }
 	public Vector div(float k) { return div(new Vector(k, k, k)); }
 
-	public String toString() { return "(" + m_i + ", " + m_j + ", " + m_k + ")"; }
+	public String toString() { 
+		String str = "(";
+		for (int i = 0; i < m_values.length - 1; i++)
+			str += m_values[i] + ", ";
+		str += m_values[m_values.length - 1] + ")";
+		return str;
+	}
 	
 }

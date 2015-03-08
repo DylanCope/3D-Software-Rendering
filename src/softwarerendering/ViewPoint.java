@@ -47,10 +47,10 @@ public class ViewPoint
 		float halfWidth = target.getWidth() / 2f;
 		float halfHeight = target.getHeight() / 2f;
 		
-		float viewRange = (float) (rel.getK() * Math.tan(m_FoV / 2));
+		float viewRange = (float) (rel.getZ() * Math.tan(m_FoV / 2));
 		
-		int xOnScreen = (int) (rel.getI() * halfWidth / viewRange + halfWidth);
-		int yOnScreen = (int) (rel.getJ() * halfWidth / viewRange + halfHeight);
+		int xOnScreen = (int) (rel.getX() * halfWidth / viewRange + halfWidth);
+		int yOnScreen = (int) (rel.getY() * halfWidth / viewRange + halfHeight);
 
 		
 		coords[0] = xOnScreen;
@@ -62,7 +62,7 @@ public class ViewPoint
 	public void drawPoint(Vector point, Bitmap target, byte[] colour)
 	{
 		
-		Vector a = new Vector(point.getI(), point.getJ(), point.getK());
+		Vector a = new Vector(point.getX(), point.getY(), point.getZ());
 		
 		a.sub(m_pos);
 //		a.rotate(-m_azimuth, -m_elevation);
@@ -72,7 +72,7 @@ public class ViewPoint
 		coords[0] += Math.tan(m_azimuth) * target.getWidth();
 		coords[1] += Math.tan(m_elevation) * target.getWidth();
 		
-		target.DrawPixel(coords[0], coords[1], colour);
+		target.drawPixel(coords[0], coords[1], colour);
 			
 	}
 	
@@ -178,15 +178,15 @@ public class ViewPoint
 	}
 	
 	public float getX(){
-		return m_pos.getI();
+		return m_pos.getX();
 	}
 	
 	public float getY(){
-		return m_pos.getJ();
+		return m_pos.getY();
 	}
 	
 	public float getZ(){
-		return m_pos.getK();
+		return m_pos.getZ();
 	}
 	
 	public float getAzimuth(){

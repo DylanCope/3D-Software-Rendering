@@ -13,7 +13,7 @@ public class Display extends Canvas
 	private static final long serialVersionUID = -5731461407498870427L;
 	private final JFrame         m_frame;
 	private final BufferedImage  m_displayImage;
-	private final Bitmap         m_frameBuffer;
+	private final RenderContext  m_frameBuffer;
 	private final byte[]         m_displayComponents;
 	private final BufferStrategy m_bufferStrategy;
 	private final Graphics       m_graphics;
@@ -26,7 +26,7 @@ public class Display extends Canvas
 		setMinimumSize(size);
 		setMaximumSize(size);
 		
-		m_frameBuffer = new Bitmap(width, height);
+		m_frameBuffer = new RenderContext(width, height);
 		m_displayImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 		m_displayComponents = 
 				((DataBufferByte) m_displayImage.getRaster().getDataBuffer()).getData();
@@ -57,13 +57,13 @@ public class Display extends Canvas
 	}
 	
 	public void swapBuffers(){
-		m_frameBuffer.CopyToByteArray(m_displayComponents);
+		m_frameBuffer.copyToByteArray(m_displayComponents);
 		m_graphics.drawImage(m_displayImage, 0, 0, 
 				m_frameBuffer.getWidth(), m_frameBuffer.getHeight(), null);
 		m_bufferStrategy.show();
 	}
 	
-	public Bitmap getFrameBuffer(){
+	public RenderContext getFrameBuffer(){
 		return m_frameBuffer;
 	}
 	

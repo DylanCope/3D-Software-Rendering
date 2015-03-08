@@ -14,11 +14,11 @@ public class Bitmap {
 		
 	}
 	
-	public void Clear(byte shade){
+	public void clear(byte shade){
 		Arrays.fill(m_components, shade);
 	}
 	
-	public void DrawPixel(int x, int y, byte[] colour) 
+	public void drawPixel(int x, int y, byte[] colour) 
 	{	
 		int index = (x + y * m_width) * 4;
 		
@@ -51,17 +51,17 @@ public class Bitmap {
 		xIncrement = dx / (float) steps;
 		yIncrement = dy / (float) steps;
 		
-		DrawPixel((int)Math.round(x), (int)Math.round(y), colour);
+		drawPixel((int)Math.round(x), (int)Math.round(y), colour);
 		
 		for(k = 0; k < steps; k++){
 			x -= xIncrement;
 			y -= yIncrement;
-			DrawPixel((int)Math.round(x), (int)Math.round(y), colour);
+			drawPixel((int)Math.round(x), (int)Math.round(y), colour);
 		}
 		
 	}
 	
-	public void CopyToByteArray(byte[] dest){
+	public void copyToByteArray(byte[] dest){
 		for(int i = 0; i < m_width * m_height; i++){
 			dest[i*3    ] = m_components[i*4 + 1];
 			dest[i*3 + 1] = m_components[i*4 + 2];

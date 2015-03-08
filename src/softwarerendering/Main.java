@@ -7,25 +7,35 @@ import softwarerendering.maths.Vector;
 
 public class Main {
 	
+	public static byte[] WHITE = new byte[] {
+		(byte) 0xFF, (byte) 0xFF,
+		(byte) 0xFF, (byte) 0xFF
+	};
+	
 	public static void main(String[] args){
 		
 		Display display = new Display(800, 600, "Software Rendering");
-		Bitmap target = display.getFrameBuffer();
+		RenderContext target = display.getFrameBuffer();
 		//Grid3D stars = new Grid3D(20000, 60f);
 		Cube cube = new Cube(0, 0, .5f, .1f);
-		Cube cube1 = new Cube(0, 0, .5f, .15f);
+//		Cube cube1 = new Cube(0, 0, .5f, .15f);
 //		Cube cube2 = new Cube(0.3f, -.4f, .1f, .05f);
 		
 		final ViewPoint view = new ViewPoint();
 		
-		float elapsedTime = 0;
+//		float elapsedTime = 0;
 		long previousTime = System.nanoTime();
 		
-		while(true){
+		Vector v0 = new Vector(100, 100);
+		Vector v1 = new Vector(150, 200);
+		Vector v2 = new Vector(200, 300);
+		
+		while (true) {
+			target.clear((byte) 0x15);
 
 			long currentTime = System.nanoTime();
-			float delta = (float)((currentTime - previousTime)/1000000000.0);
-			elapsedTime += delta;
+			float delta = (float) ((currentTime - previousTime) / 1000000000.0);
+//			elapsedTime += delta;
 			previousTime = currentTime;
 			
 			cube.rotate(Vector.xAxis, delta);
@@ -37,7 +47,7 @@ public class Main {
 //			float size = 0.15f + 0.00015f * sin;
 //			cube1.setSize(size);
 			
-			target.Clear((byte) 0x00);
+			target.fillTriangle(v0, v1, v2);
 			
 			cube.update(delta, target, view);
 //			cube1.update(delta, target, view);

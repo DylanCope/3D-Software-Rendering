@@ -15,9 +15,9 @@ public class Quaternion
 		Vector n = axis.normalised();
 		float cos = (float) Math.cos(theta / 2f);
 		float sin = (float) Math.sin(theta / 2f);
-		x = n.getI() * sin;
-		y = n.getJ() * sin;
-		z = n.getK() * sin;
+		x = n.getX() * sin;
+		y = n.getY() * sin;
+		z = n.getZ() * sin;
 		w = cos;
 	}
 	
@@ -51,10 +51,10 @@ public class Quaternion
 	
 	public Quaternion mul(Vector b) {
 		
-		float w_ = -x * b.getI() - y * b.getJ() - z * b.getK();
-		float x_ =  w * b.getI() + y * b.getK() - z * b.getJ();
-		float y_ =  w * b.getJ() + z * b.getI() - x * b.getK();
-		float z_ =  w * b.getK() + x * b.getJ() - y * b.getI();
+		float w_ = -x * b.getX() - y * b.getY() - z * b.getZ();
+		float x_ =  w * b.getX() + y * b.getZ() - z * b.getY();
+		float y_ =  w * b.getY() + z * b.getX() - x * b.getZ();
+		float z_ =  w * b.getZ() + x * b.getY() - y * b.getX();
 		
 		return new Quaternion(x_, y_, z_, w_);
 	}
