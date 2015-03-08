@@ -1,5 +1,7 @@
 package softwarerendering;
 
+import java.lang.reflect.Array;
+
 import softwarerendering.maths.Vector;
 
 public class RenderContext extends Bitmap
@@ -18,18 +20,22 @@ public class RenderContext extends Bitmap
 		m_scanBuffer[yCoord * 2 + 1] = xMax;
 	}
 	
-	public void fillShape(int yMin, int yMax)
+	public void fillShape(int yMin, int yMax, byte[] colour)
 	{
 		for(int j = yMin; j < yMax; j++)
 		{
-			int xMin = m_scanBuffer[j * 2];
-			int xMax = m_scanBuffer[j * 2 + 1];
-
+			int xMin = 0, xMax = 0;
+			
+			try {
+				xMin = m_scanBuffer[j * 2];
+			} catch (ArrayIndexOutOfBoundsException e) {}
+			
+			try {
+				xMax = m_scanBuffer[j * 2 + 1];
+			} catch (ArrayIndexOutOfBoundsException e) {}
+			
 			for(int i = xMin; i < xMax; i++)
-				drawPixel(i, j, new byte[] {
-						(byte)0xFF, (byte)0xFF, 
-						(byte)0xFF, (byte)0xFF
-					});
+				drawPixel(i, j, colour);
 		}
 	}
 
@@ -58,12 +64,15 @@ public class RenderContext extends Bitmap
 		float curX = (float) xStart;
 
 		for (int j = yStart; j < yEnd; j++) {
-			m_scanBuffer[j * 2 + whichSide] = (int)curX;
+			try {
+				m_scanBuffer[j * 2 + whichSide] = (int) curX;
+			} catch (ArrayIndexOutOfBoundsException e) {}
+			
 			curX += xStep;
 		}
 	}
 	
-	public void fillTriangle(Vector v0, Vector v1, Vector v2)
+	public void fillTriangle(Vector v0, Vector v1, Vector v2, byte[] colour)
 	{
 		Vector min = v0, mid = v1, max = v2;
 		
@@ -84,6 +93,6 @@ public class RenderContext extends Bitmap
 		
 		int handedness = min.triangeArea(max, mid) >= 0 ? 1 : 0;
 		scanConvertTriangle(min, mid, max, handedness);
-		fillShape((int) min.getY(), (int) max.getY()); 
+		fillShape((int) min.getY(), (int) max.getY(), colour); 
 	}
 }

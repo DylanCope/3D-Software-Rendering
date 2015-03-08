@@ -2,6 +2,7 @@ package softwarerendering;
 import java.awt.event.KeyEvent;
 
 import softwarerendering.geometry.Cube;
+import softwarerendering.geometry.Simplex2d;
 import softwarerendering.maths.Vector;
 
 
@@ -17,7 +18,7 @@ public class Main {
 		Display display = new Display(800, 600, "Software Rendering");
 		RenderContext target = display.getFrameBuffer();
 		//Grid3D stars = new Grid3D(20000, 60f);
-		Cube cube = new Cube(0, 0, .5f, .1f);
+		Cube cube = new Cube(0, -.2f, .5f, .1f);
 //		Cube cube1 = new Cube(0, 0, .5f, .15f);
 //		Cube cube2 = new Cube(0.3f, -.4f, .1f, .05f);
 		
@@ -26,9 +27,10 @@ public class Main {
 //		float elapsedTime = 0;
 		long previousTime = System.nanoTime();
 		
-		Vector v0 = new Vector(100, 100);
-		Vector v1 = new Vector(150, 200);
-		Vector v2 = new Vector(200, 300);
+		Vector v0 = new Vector(0, 0.1f, 0.5f);
+		Vector v1 = new Vector(0.15f, 0, 0.5f);
+		Vector v2 = new Vector(-.15f, 0, 0.5f);
+		Simplex2d simplex = new Simplex2d(v0, v1, v2);
 		
 		while (true) {
 			target.clear((byte) 0x15);
@@ -42,14 +44,17 @@ public class Main {
 			cube.rotate(Vector.yAxis, delta);
 			cube.rotate(Vector.zAxis, delta);
 			
+			simplex = simplex.rotateOnAxisAroundPoint(Vector.yAxis, new Vector(0, 0, 0.45f), delta);
+			simplex.draw(view, target, Display.RED);
+			
 //			cube1.rotate(Vector.xAxis, delta);
 //			float sin = (float) Math.sin(Math.toRadians(elapsedTime * 50));
 //			float size = 0.15f + 0.00015f * sin;
 //			cube1.setSize(size);
 			
-			target.fillTriangle(v0, v1, v2);
+//			target.fillTriangle(v0, v1, v2);
 			
-			cube.update(delta, target, view);
+			cube.draw(target, view);
 //			cube1.update(delta, target, view);
 //			cube2.update(delta, target, view);
 			

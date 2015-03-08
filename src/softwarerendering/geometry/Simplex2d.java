@@ -1,6 +1,6 @@
 package softwarerendering.geometry;
 
-import softwarerendering.Bitmap;
+import softwarerendering.RenderContext;
 import softwarerendering.ViewPoint;
 import softwarerendering.maths.Vector;
 
@@ -25,9 +25,32 @@ public class Simplex2d
 		return new Simplex2d(m_vertices, m_normal.mul(-1));
 	}
 	
-	public void draw(ViewPoint view, Bitmap target)
+	public void setNormal(Vector normal)
 	{
-		
+		m_normal = normal;
+	}
+	
+	public void draw(ViewPoint view, RenderContext target, byte[] colour)
+	{
+		Vector[] points = new Vector[3];
+		for (int i = 0; i < m_vertices.length; i++) {
+			int[] coords = view.getViewCoords(m_vertices[i], target);
+			points[i] = new Vector(coords[0], coords[1]);
+		}
+		target.fillTriangle(points[0], points[1], points[2], colour);
+	}
+	
+	public Simplex2d rotateOnAxisAroundOrigin(Vector axis, float theta)
+	{
+		return rotateOnAxisAroundPoint(axis, Vector.origin, theta);
+	}
+	
+	public Simplex2d rotateOnAxisAroundPoint(Vector axis, Vector point, float theta)
+	{
+		Vector[] newVertices = new Vector[m_vertices.length];
+		for (int i = 0; i < m_vertices.length; i++)
+			newVertices[i] = m_vertices[i].sub(point).rotate(axis, theta).add(point);
+		return new Simplex2d(newVertices, m_normal);
 	}
 	
 	public boolean facingView(ViewPoint view)
@@ -40,6 +63,13 @@ public class Simplex2d
 	
 	public Simplex2d setVertices(Vector[] vertices) {
 		return new Simplex2d(vertices, m_normal);
+	}
+	
+	public Simplex2d translate(Vector dv) {
+		Vector[] newVertices = new Vector[m_vertices.length];
+		for (int i = 0; i < m_vertices.length; i++)
+			newVertices[i] = m_vertices[i].add(dv);
+		return new Simplex2d(newVertices, m_normal);
 	}
 	
 }

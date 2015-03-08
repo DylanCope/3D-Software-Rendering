@@ -2,9 +2,10 @@ package softwarerendering.maths;
 
 public class Vector 
 {
-	public static final Vector xAxis = new Vector(1, 0, 0);
-	public static final Vector yAxis = new Vector(0, 1, 0);
-	public static final Vector zAxis = new Vector(0, 0, 1);
+	public static final Vector origin = new Vector(0, 0, 0);
+	public static final Vector xAxis  = new Vector(1, 0, 0);
+	public static final Vector yAxis  = new Vector(0, 1, 0);
+	public static final Vector zAxis  = new Vector(0, 0, 1);
 	
 	private float[] m_values;
 	
@@ -113,7 +114,11 @@ public class Vector
 	
 	public float[] getValues() { return m_values; }
 	
-	public Vector add(Vector b) { 
+	public Vector add(Vector b) 
+	{ 
+		if (b.getValues().length != m_values.length)
+			return null;
+		
 		float[] newValues = new float[m_values.length];
 		for (int i = 0; i < m_values.length; i++)
 			newValues[i] = m_values[i] + b.getValues()[i];

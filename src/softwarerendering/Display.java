@@ -19,6 +19,13 @@ public class Display extends Canvas
 	private final Graphics       m_graphics;
 	private final Input          m_input;
 	
+	public static final byte[] WHITE = new byte[] {
+		(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF
+	};
+	public static final byte[] RED = new byte[] {
+		(byte) 0xFF, (byte) 0x00, (byte) 0x00, (byte) 0xFF
+	};
+	
 	public Display(int width, int height, String title)
 	{
 		Dimension size = new Dimension(width, height);
