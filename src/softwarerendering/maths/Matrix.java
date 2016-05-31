@@ -1,38 +1,105 @@
 package softwarerendering.maths;
 
+import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Matrix {
 	
 	private float[][] values;
-	private int width, height;
+	private int rows, cols;
 	private boolean isNull;
 	
-	public Matrix(int width, int height)
+	public static void main(String[] args)
 	{
-		values = new float[width][height];
-		this.width = width;
-		this.height = height;
+		Set<Vector> basis = new HashSet<Vector>();
+		basis.add(new Vector(1, 1, 1));
+		basis.add(new Vector(1, 0, 1));
+		
+		Vector v = new Vector(1, 1, 4);
+		Vector p = projectVectorToSubSpace(v, basis);
+		System.out.println(p);
+		
+		float r3o3 = (float) Math.sqrt(3) / 3f;
+		float r6o6 = (float) Math.sqrt(6) / 6f;
+		
+		Set<Vector> basis2 = new HashSet<Vector>();
+		Vector u1 = new Vector(r3o3, -r3o3, r3o3);
+		Vector v1 = new Vector(-r3o3, r6o6, 2*r6o6);
+		
+		basis2.add(u1);
+		basis2.add(v1);
+		Vector w = new Vector(3, -3, 0);
+		
+		Vector pw = projectVectorToSubSpace(w, basis2);
+		System.out.println(pw);
+		System.out.println(w.sub(pw).dotProduct(u1));
+	}
+	
+	public static Vector projectVectorToSubSpace(Vector v, Set<Vector> basisSet)
+	{	
+		Matrix M = matrixFromBasisSet(basisSet);
+		Matrix Mt = M.getTranspose();
+		
+		Matrix P = M.mul(Mt.mul(M).getInverse()).mul(Mt).mul(v);
+		// This applies Proj_V(v) = M[(Mt.M)^-1]Mt.v
+		
+		Vector p = new Vector(P.getValues()[0]);
+		
+		return p;
+	}
+	
+	public static Matrix matrixFromBasisSet(Set<Vector> basisSet)
+	{
+		int n = 0;
+		for (Vector b : basisSet)
+		{
+			n = b.getDimension();
+			break;
+		}
+		
+		int k = basisSet.size();
+		float[][] vals = new float[k][n];
+		
+		int i = 0;
+		for (Vector b : basisSet)
+		{
+			vals[i] = b.getValues();
+			i++;
+		}
+		
+		Matrix M = new Matrix(k, n, vals);
+		return M;
+	}
+	
+	public Matrix(int rows, int cols)
+	{
+		values = new float[rows][cols];
+		this.rows = rows;
+		this.cols = cols;
 	}
 	
 	public Matrix(int size)
 	{
-		width = size;
-		height = size;
+		rows = size;
+		cols = size;
 		values = new float[size][size];
 	}
 	
-	public Matrix(int width, int height, float[][] values)
+	public Matrix(int rows, int cols, float[][] values)
 	{
-		this.width = width;
-		this.height = height;
-		this.values = new float[width][height];
+		this.rows = rows;
+		this.cols = cols;
+		this.values = new float[rows][cols];
 		
-		for(int i = 0; i < width; i++)
-			for(int j = 0; j < height; j++)
+		for(int i = 0; i < rows; i++)
+			for(int j = 0; j < cols; j++)
 				this.values[i][j] = values[i][j];
+			
 		
 	}
 	
-	public static Matrix get2DRotationalMatrix(double theta)
+	public static Matrix initRotationalMatrix2d(double theta)
 	{
 		Matrix matrix = new Matrix(2);
 		matrix.set(0, 0,  (float) Math.cos(theta));
@@ -55,8 +122,8 @@ public class Matrix {
 	
 	public void fill(float value)
 	{
-		for(int i = 0; i < width; i++)
-			for(int j = 0; j < height; j++)
+		for(int i = 0; i < rows; i++)
+			for(int j = 0; j < cols; j++)
 				set(i, j, value);
 	}
 	
@@ -64,10 +131,10 @@ public class Matrix {
 	{
 		float trace = 0;
 		
-		if (width != height)
+		if (rows != cols)
 			return 0;
 		
-		for (int i = 0; i < width; i++)
+		for (int i = 0; i < rows; i++)
 			trace += values[i][i];
 		
 		return trace;
@@ -116,13 +183,13 @@ public class Matrix {
 	{
 		Matrix inverse;
 		
-		if (width > 2) {
-			float[][] values = new float[width][width];
+		if (rows > 2) {
+			float[][] values = new float[rows][rows];
 			int sign = 0;
 			int k = 0;
 			
-			for (int i = 0; i < width; i++) {
-				for (int j = 0; j < width; j++) {
+			for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < rows; j++) {
 					if (k % 2 == 0)
 						sign = 1;
 					else
@@ -132,11 +199,11 @@ public class Matrix {
 					k++;
 
 				}
-				if (width % 2 == 0)
+				if (rows % 2 == 0)
 					k++;
 			}
 			
-			inverse = new Matrix(width, width, values).getTranspose().div(getDeterminant());
+			inverse = new Matrix(rows, rows, values).getTranspose().div(getDeterminant());
 			
 		} 
 		else 
@@ -156,23 +223,23 @@ public class Matrix {
 	
 	public Matrix getTranspose()
 	{
-		float[][] values = new float[height][width];
+		float[][] values = new float[cols][rows];
 		
-		for(int i = 0; i < width; i++) {
-			for(int j = 0; j < height; j++)
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < cols; j++)
 				values[j][i] = this.values[i][j];
 		}
 		
-		return new Matrix(height, width, values);
+		return new Matrix(cols, rows, values);
 	}
 	
 	public float getDeterminant()
 	{
 		float det = 0;
 			
-		if(width > 2 && width == height){
+		if(rows > 2 && rows == cols){
 			
-			for(int i = 0; i < width; i++){
+			for(int i = 0; i < rows; i++){
 				
 				int sign;
 				if(i % 2 == 0) sign = 1;
@@ -189,12 +256,12 @@ public class Matrix {
 	
 	public Matrix getSubMatrix(int i, int j)
 	{
-		float[][] values = new float[width - 1][width - 1];
+		float[][] values = new float[rows - 1][rows - 1];
 		int w = 0, h = 0;
 		
-		for(int a = 0; a < width; a++){
+		for(int a = 0; a < rows; a++){
 			if (a != i){
-				for(int b = 0; b < height; b++){
+				for(int b = 0; b < cols; b++){
 					if (b != j) {
 						values[w][h] = this.values[a][b];
 						h++;
@@ -205,19 +272,25 @@ public class Matrix {
 			}
 		}
 		
-		return new Matrix(width - 1, width - 1, values);
+		return new Matrix(rows - 1, rows - 1, values);
+	}
+	
+	public Vector transform(Vector v)
+	{
+		Vector transformedVector = new Vector(v.getValues().length);
+		return transformedVector;
 	}
 	
 	public Matrix add(Matrix b)
 	{
-		Matrix result = new Matrix(width, height);
+		Matrix result = new Matrix(rows, cols);
 		
-		if(width == b.getWidth() && height == b.getHeight()){
+		if(rows == b.getWidth() && cols == b.getHeight()){
 			
-			float[][] values = new float[width][height];
+			float[][] values = new float[rows][cols];
 			
-			for(int i = 0; i < width; i++){
-				for(int j = 0; j < height; j++){
+			for(int i = 0; i < rows; i++){
+				for(int j = 0; j < cols; j++){
 					values[i][j] = get(i, j) + b.get(i, j);
 				}
 			}
@@ -232,18 +305,18 @@ public class Matrix {
 
 	public Matrix mul(Matrix b)
 	{
-		Matrix result = new Matrix(b.getWidth(), height);
+		Matrix result = new Matrix(b.getWidth(), cols);
 		
-		if(width == b.getHeight()){
+		if(rows == b.getHeight()){
 
-			float[][] values = new float[b.getWidth()][height];
+			float[][] values = new float[b.getWidth()][cols];
 			
 			for (int w = 0; w < b.getWidth(); w++){
-				for(int h = 0; h < height; h++){
+				for(int h = 0; h < cols; h++){
 					
 					float newVal = 0;
 					
-					for(int i = 0; i < width; i++){
+					for(int i = 0; i < rows; i++){
 						newVal += get(i, h) * b.get(w, i);
 					}
 					values[w][h] = newVal;
@@ -258,46 +331,56 @@ public class Matrix {
 		return result;
 	}
 	
+	public Matrix mul(Vector v)
+	{
+		Matrix m = new Matrix(
+				1, v.getValues().length, 
+				new float[][] {v.getValues()}
+			);
+		
+		return mul(m);
+	}
+	
 	public Matrix add(float k)
 	{
 			
-		float[][] values = new float[width][height];
+		float[][] values = new float[rows][cols];
 		
-		for(int i = 0; i < width; i++){
-			for(int j = 0; j < height; j++){
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
 				values[i][j] = get(i, j) + k;
 			}
 		}
 		
-		return new Matrix(width, height, values);
+		return new Matrix(rows, cols, values);
 	}
 	
 	public Matrix mul(float k)
 	{
 		
-		float[][] values = new float[width][height];
+		float[][] values = new float[rows][cols];
 		
-		for(int i = 0; i < width; i++){
-			for(int j = 0; j < height; j++){
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
 				values[i][j] = get(i, j) * k;
 			}
 		}
 		
-		return new Matrix(width, height, values);
+		return new Matrix(rows, cols, values);
 	}	
 	
 	public Matrix div(float k)
 	{
 		
-		float[][] values = new float[width][height];
+		float[][] values = new float[rows][cols];
 		
-		for(int i = 0; i < width; i++){
-			for(int j = 0; j < height; j++){
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
 				values[i][j] = get(i, j) / k;
 			}
 		}
 		
-		return new Matrix(width, height, values);
+		return new Matrix(rows, cols, values);
 	}
 	
 	public String toString()
@@ -308,10 +391,13 @@ public class Matrix {
 		if (isNull)
 			return "This is a null matrix";
 		
-		for (int i = 0; i < height; i++){
+		DecimalFormat format = new DecimalFormat("###.##");
+		
+		for (int i = 0; i < cols; i++){
 			text += "(\t";
-			for (int j = 0; j < width; j++){
-				text += Math.round(values[j][i] * 100000)/100000f + "\t";
+			for (int j = 0; j < rows; j++){
+//				text += Math.round(values[j][i] * 100000)/100000f + "\t";
+				text += format.format(values[j][i]) + "\t";
 			}
 			text += ")\n";
 		}
@@ -330,12 +416,12 @@ public class Matrix {
 	
 	public int getWidth() 
 	{
-		return width;
+		return rows;
 	}
 
 	public int getHeight() 
 	{
-		return height;
+		return cols;
 	}
 	
 }

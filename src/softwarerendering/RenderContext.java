@@ -1,7 +1,5 @@
 package softwarerendering;
 
-import java.lang.reflect.Array;
-
 import softwarerendering.maths.Vector;
 
 public class RenderContext extends Bitmap
@@ -39,37 +37,45 @@ public class RenderContext extends Bitmap
 		}
 	}
 
-	public void scanConvertTriangle(Vector minYVert, Vector midYVert, 
-			Vector maxYVert, int handedness)
+	public void scanTriangle(Vector minYVert, Vector midYVert, 
+			Vector maxYVert, boolean handedness)
 	{
-		scanConvertLine(minYVert, maxYVert, 0 + handedness);
-		scanConvertLine(minYVert, midYVert, 1 - handedness);
-		scanConvertLine(midYVert, maxYVert, 1 - handedness);
+		Edge topToBottom    = new Edge(minYVert, maxYVert);
+		Edge topToMiddle    = new Edge(minYVert, midYVert);
+		Edge middleToBottom = new Edge(midYVert, maxYVert);
+
+		scanEdges(topToBottom, topToMiddle, handedness);
+		scanEdges(topToBottom, middleToBottom, handedness);
+		
+		// Repeat for bottom half of triangle.
 	}
-
-	private void scanConvertLine(Vector minYVert, Vector maxYVert, int whichSide)
+	
+	private void scanEdges(Edge a, Edge b, boolean handedness)
 	{
-		int yStart = (int) minYVert.getY();
-		int yEnd   = (int) maxYVert.getY();
-		int xStart = (int) minYVert.getX();
-		int xEnd   = (int) maxYVert.getX();
-
-		int yDist = yEnd - yStart;
-		int xDist = xEnd - xStart;
-
-		if (yDist <= 0)
-			return;
-
-		float xStep = (float) xDist / (float) yDist;
-		float curX = (float) xStart;
-
-		for (int j = yStart; j < yEnd; j++) {
-			try {
-				m_scanBuffer[j * 2 + whichSide] = (int) curX;
-			} catch (ArrayIndexOutOfBoundsException e) {}
-			
-			curX += xStep;
+		Edge left  = a;
+		Edge right = b;
+		
+		if (handedness) {
+			Edge temp = left;
+			left = right; right = temp;
 		}
+		
+		int yStart = b.getYStart();
+		int yEnd = b.getYEnd();
+		
+		for (int j = yStart; j < yEnd; j++) {
+			drawScanLine(left, right, j);
+			left.step();
+			right.step();
+		}
+	}
+	
+	private void drawScanLine(Edge left, Edge right, int j)
+	{
+		int xMin = (int) Math.ceil(left.getX());
+		int xMax = (int) Math.ceil(right.getX());
+		for(int i = xMin; i < xMax; i++)
+			drawPixel(i, j, Display.WHITE);
 	}
 	
 	public void fillTriangle(Vector v0, Vector v1, Vector v2, byte[] colour)
@@ -91,8 +97,8 @@ public class RenderContext extends Bitmap
 			max = mid; mid = temp;
 		}
 		
-		int handedness = min.triangeArea(max, mid) >= 0 ? 1 : 0;
-		scanConvertTriangle(min, mid, max, handedness);
-		fillShape((int) min.getY(), (int) max.getY(), colour); 
+		boolean handedness = min.triangeArea(max, mid) >= 0;
+		scanTriangle(min, mid, max, handedness);
+		fillShape((int) Math.ceil(min.getY()), (int) Math.ceil(max.getY()), colour); 
 	}
 }

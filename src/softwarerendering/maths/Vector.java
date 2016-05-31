@@ -21,11 +21,21 @@ public class Vector
 		m_values = values;
 	}
 	
+	public Vector(int size) {
+		m_values = new float[size];
+	}
+	
 	public float len() {
 		float len = 0;
 		for (float value : m_values)
 			len += value * value;
+		
 		return (float) Math.sqrt(len);
+	}
+	
+	public float distanceTo(Vector position)
+	{
+		return sub(position).len();
 	}
 	
 	public Vector normalised()
@@ -154,6 +164,10 @@ public class Vector
 			str += m_values[i] + ", ";
 		str += m_values[m_values.length - 1] + ")";
 		return str;
+	}
+
+	public int getDimension() {
+		return m_values.length;
 	}
 	
 }

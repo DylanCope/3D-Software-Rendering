@@ -8,11 +8,13 @@ public class Simplex2d
 {
 	private Vector[] m_vertices;
 	private Vector m_normal;
+	private Vector m_localOrigin;
 	
 	public Simplex2d(Vector p1, Vector p2, Vector p3)
 	{
 		m_vertices = new Vector[] {p1, p2, p3};
 		m_normal = p1.sub(p2).crossProduct(p1.sub(p3));
+		m_localOrigin = p1.add(p2.add(p3)).div(3);
 	}
 	
 	public Simplex2d(Vector[] vertices, Vector normal)
@@ -43,6 +45,11 @@ public class Simplex2d
 	public Simplex2d rotateOnAxisAroundOrigin(Vector axis, float theta)
 	{
 		return rotateOnAxisAroundPoint(axis, Vector.origin, theta);
+	}
+	
+	public Simplex2d rotateOnAxisAroundLocalOrigin(Vector axis, float theta)
+	{
+		return rotateOnAxisAroundPoint(axis, m_localOrigin, theta);
 	}
 	
 	public Simplex2d rotateOnAxisAroundPoint(Vector axis, Vector point, float theta)

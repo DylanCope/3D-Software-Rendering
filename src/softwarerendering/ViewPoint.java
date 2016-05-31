@@ -36,6 +36,10 @@ public class ViewPoint
 		
 	}
 	
+	public float viewRangeAt(float depth) {
+		return (float) (depth * Math.tan(m_FoV / 2));
+	}
+	
 	public int[] getViewCoords(Vector point, Bitmap target) {
 		Vector rel = m_pos
 				.sub(point)
@@ -47,7 +51,7 @@ public class ViewPoint
 		float halfWidth = target.getWidth() / 2f;
 		float halfHeight = target.getHeight() / 2f;
 		
-		float viewRange = (float) (rel.getZ() * Math.tan(m_FoV / 2));
+		float viewRange = viewRangeAt(rel.getZ());
 		
 		int xOnScreen = (int) (rel.getX() * halfWidth / viewRange + halfWidth);
 		int yOnScreen = (int) (rel.getY() * halfWidth / viewRange + halfHeight);

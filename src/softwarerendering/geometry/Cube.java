@@ -10,11 +10,11 @@ import softwarerendering.maths.Vector;
 public class Cube {
 	private float m_size;
 	private ArrayList<Vector> m_vertices;
-	private ArrayList<Edge> m_edges;
+	private ArrayList<Edge3d> m_edges;
 	private ArrayList<SquareFace> m_faces;
 	private Vector m_position;
 	
-	private byte[] WHITE;
+	private byte[] colour;
 	
 	public static enum RenderingOption {
 		VERTEX_ONLY, WIREFRAME, SOLID_FILL
@@ -69,9 +69,10 @@ public class Cube {
 		m_position = new Vector(x, y, z);
 		m_renderingOption = RenderingOption.WIREFRAME;
 		
-		WHITE = new byte[4];
+		byte[] WHITE = new byte[4];
 		WHITE[0] = (byte) 0xFF; WHITE[1] = (byte) 0xFF;
 		WHITE[2] = (byte) 0xFF; WHITE[3] = (byte) 0xFF;
+		colour = WHITE;
 		
 		updateVertices();
 	}
@@ -99,25 +100,26 @@ public class Cube {
 	
 	private void updateEdges()
 	{
-		m_edges = new ArrayList<Edge>();
-		m_edges.add(new Edge(m_vertices.get(0), m_vertices.get(4)));
-		m_edges.add(new Edge(m_vertices.get(4), m_vertices.get(5)));
-		m_edges.add(new Edge(m_vertices.get(5), m_vertices.get(1)));
-		m_edges.add(new Edge(m_vertices.get(1), m_vertices.get(0)));
-		m_edges.add(new Edge(m_vertices.get(0), m_vertices.get(2)));
-		m_edges.add(new Edge(m_vertices.get(4), m_vertices.get(6)));
-		m_edges.add(new Edge(m_vertices.get(5), m_vertices.get(7)));
-		m_edges.add(new Edge(m_vertices.get(1), m_vertices.get(3)));
-		m_edges.add(new Edge(m_vertices.get(6), m_vertices.get(2)));
-		m_edges.add(new Edge(m_vertices.get(7), m_vertices.get(6)));
-		m_edges.add(new Edge(m_vertices.get(3), m_vertices.get(7)));
-		m_edges.add(new Edge(m_vertices.get(2), m_vertices.get(3)));
+		m_edges = new ArrayList<Edge3d>();
+		m_edges.add(new Edge3d(m_vertices.get(0), m_vertices.get(4)));
+		m_edges.add(new Edge3d(m_vertices.get(4), m_vertices.get(5)));
+		m_edges.add(new Edge3d(m_vertices.get(5), m_vertices.get(1)));
+		m_edges.add(new Edge3d(m_vertices.get(1), m_vertices.get(0)));
+		m_edges.add(new Edge3d(m_vertices.get(0), m_vertices.get(2)));
+		m_edges.add(new Edge3d(m_vertices.get(4), m_vertices.get(6)));
+		m_edges.add(new Edge3d(m_vertices.get(5), m_vertices.get(7)));
+		m_edges.add(new Edge3d(m_vertices.get(1), m_vertices.get(3)));
+		m_edges.add(new Edge3d(m_vertices.get(6), m_vertices.get(2)));
+		m_edges.add(new Edge3d(m_vertices.get(7), m_vertices.get(6)));
+		m_edges.add(new Edge3d(m_vertices.get(3), m_vertices.get(7)));
+		m_edges.add(new Edge3d(m_vertices.get(2), m_vertices.get(3)));
 	}
 	
 	private void updateFaces()
 	{
 		m_faces = new ArrayList<SquareFace>();
-		m_faces.add(new SquareFace(
+		m_faces.add(
+			new SquareFace(
 				m_vertices.get(0), m_vertices.get(4), 
 				m_vertices.get(1), m_vertices.get(5), 
 				m_vertices.get(0).sub(m_vertices.get(4))
@@ -129,19 +131,22 @@ public class Cube {
 	public void draw(RenderContext target, ViewPoint view)
 	{	
 		if (m_renderingOption == RenderingOption.WIREFRAME)
-			for (Edge edge : m_edges) {
+			for (Edge3d edge : m_edges) {
 				Vector p1 = edge.getPoints()[0].add(m_position);
 				Vector p2 = edge.getPoints()[1].add(m_position);
 				
-				view.drawLine(p1, p2, target, WHITE);
+				view.drawLine(p1, p2, target, colour);
 			}
+		else {
 //		else if (m_renderingOption == RenderingOption.SOLID_FILL)
 			for (SquareFace face : m_faces)
-				if (face.isFacingView(view))
+//				if (face.isFacingView(view))
 					face.translate(m_position.mul(-1)).draw(view, target);
+		}
 	}
 	
-	public void rotate(Vector axis, float theta) {
+	public void rotate(Vector axis, float theta) 
+	{
 		for (int i = 0; i < m_vertices.size(); i++)
 			m_vertices.set(i, m_vertices.get(i).rotate(axis, theta));
 		updateEdges();
@@ -159,4 +164,8 @@ public class Cube {
 	public void setRenderingOption(RenderingOption option) { m_renderingOption = option; }
 	public RenderingOption getRenderingOption() { return m_renderingOption; }
 
+	public void setPosition(Vector pos) { m_position = pos; }
+	public Vector getPosition() { return m_position; }
+
+	public void setColour(byte[] colour) { this.colour = colour; }
 }

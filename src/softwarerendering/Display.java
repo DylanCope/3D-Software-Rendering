@@ -18,6 +18,8 @@ public class Display extends Canvas
 	private final BufferStrategy m_bufferStrategy;
 	private final Graphics       m_graphics;
 	private final Input          m_input;
+	private float				 m_elapsedTime;
+	private float				 m_timeAtLastCall;
 	
 	public static final byte[] WHITE = new byte[] {
 		(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF
@@ -32,6 +34,8 @@ public class Display extends Canvas
 		setPreferredSize(size);
 		setMinimumSize(size);
 		setMaximumSize(size);
+		m_elapsedTime = 0;
+		m_timeAtLastCall = 0;
 		
 		m_frameBuffer = new RenderContext(width, height);
 		m_displayImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
@@ -61,6 +65,21 @@ public class Display extends Canvas
 		setFocusable(true);
 		requestFocus();
 		
+	}
+	
+	/** Returns the time since the last call in seconds. */
+	public float getDelta()
+	{
+		float t = System.nanoTime();
+		float delta = t - m_timeAtLastCall;
+		m_timeAtLastCall = t;
+		m_elapsedTime += delta;
+		return delta / 1000000000f;
+	}
+	
+	public float getElapsedTime()
+	{
+		return m_elapsedTime / 1000000000f;
 	}
 	
 	public void swapBuffers(){
